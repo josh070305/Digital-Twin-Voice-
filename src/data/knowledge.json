@@ -1,0 +1,56 @@
+[
+  {
+    "id": "summary",
+    "section": "Professional Summary",
+    "content": "I am a 2026 B.Tech Computer Science graduate from Bharathidasan University with CGPA 8.2 and no standing arrears. I have hands-on expertise in Full Stack MERN Development and AI/ML Engineering. My key projects include: E-Commerce Microservices Platform, Real-Time AI Meeting Assistant, Exam Update Tracker AI Agent, and Digital Twin Voice Bot. I am proficient in Python, TensorFlow, Keras, React.js, Node.js, MongoDB, and Groq API.",
+    "citation": "Resume — Professional Summary"
+  },
+  {
+    "id": "ecommerce",
+    "section": "E-Commerce Microservices Platform",
+    "content": "I built a full-stack MERN e-commerce platform with 6 microservices: Auth, Product, Cart, Order, Payment, and Notification services. Built with Node.js, Express.js, JWT authentication, MongoDB Atlas, React.js frontend with Redux and TypeScript, Stripe payment gateway, Docker, and GitHub Actions CI/CD pipeline. Maintained under 200ms average API response time. GitHub: josh070305/e--commerce-microservices",
+    "citation": "Resume — Technical Projects — E-Commerce Platform"
+  },
+  {
+    "id": "exam-tracker",
+    "section": "Exam Update Tracker AI Agent",
+    "content": "I built the Exam Update Tracker, an autonomous AI agent pipeline that monitors 6 Indian government recruitment exam portals (SSC, RRB, TNPSC, UPSC, IBPS, SBI) for live changes. It periodically scrapes notification pages, detects content diffs, uses Groq LLaMA-3.3-70b and Claude to extract structured updates (new exams, date changes, admit cards, results, eligibility revisions), stores them in a versioned MongoDB knowledge base, and pushes automated alerts via Telegram, WhatsApp (Twilio), and Email (Nodemailer). Built with Node.js, Express, MongoDB, Cheerio, Node-Cron, React, TypeScript, and Tailwind CSS. GitHub: github.com/josh070305/Exam-Tracker",
+    "citation": "GitHub — Exam-Tracker"
+  },
+  {
+    "id": "realtime-meeting",
+    "section": "Real-Time AI Meeting Assistant",
+    "content": "I built a Real-Time AI Meeting Assistant as a full-stack project. It listens to meetings in real time, transcribes speech using AI, generates intelligent summaries, extracts action items automatically, and provides real-time responses. Built with React, Node.js, MongoDB, and Groq API for ultra-low latency LLM processing. The system handles live audio streams and delivers structured meeting insights instantly. GitHub: github.com/josh070305/Real-time-AI-meeting-assistant",
+    "citation": "GitHub — Real-time-AI-meeting-assistant"
+  },
+  {
+    "id": "skills",
+    "section": "Technical Skills",
+    "content": "My technical skills include: Languages: Python, SQL, JavaScript, TypeScript, HTML5, CSS3. Full Stack: React.js, Node.js, Express.js, MongoDB, REST APIs, JWT, Redux, Tailwind CSS. AI/ML: TensorFlow, Keras, Scikit-learn, LSTM, Bi-LSTM, NLP, Feature Engineering. DevOps: Git, GitHub, Docker, Vercel, GitHub Actions, Postman. Databases: MySQL, MongoDB, MongoDB Atlas.",
+    "citation": "Resume — Technical Skills"
+  },
+  {
+    "id": "education",
+    "section": "Education",
+    "content": "I completed my Bachelor of Technology in Computer Science from Bharathidasan University, Tiruchirappalli, Tamil Nadu. I graduated in 2026 with a CGPA of 8.2 out of 10 and have no standing arrears.",
+    "citation": "Resume — Education"
+  },
+  {
+    "id": "github",
+    "section": "GitHub Profile",
+    "content": "My GitHub username is josh070305. My repositories include e--commerce-microservices, Real-time-AI-meeting-assistant, Exam-Tracker, and Digital Twin Voice Bot. My LinkedIn is linkedin.com/in/joshna-senthil and email is joesenthil07@gmail.com.",
+    "citation": "GitHub — github.com/josh070305"
+  },
+  {
+    "id": "location",
+    "section": "Location and Availability",
+    "content": "I am based in Coimbatore, Tamil Nadu, India. I am open to roles in Chennai, Bangalore, remote positions, and am willing to relocate within India. I am actively looking for Software Engineer, Full Stack Developer, or AI/ML Engineer roles.",
+    "citation": "Resume — Personal Information"
+  },
+  {
+    "id": "contact",
+    "section": "Contact Information",
+    "content": "I can be reached at joesenthil07@gmail.com. Phone: +91 9342214179. LinkedIn: linkedin.com/in/joshna-senthil. GitHub: github.com/josh070305. Proof resume: proof.zeromaintenanceengineer.in/cv/joesenthil07",
+    "citation": "Resume — Contact Information"
+  }
+]
