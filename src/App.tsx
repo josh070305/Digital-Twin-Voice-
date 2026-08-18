@@ -283,9 +283,9 @@ function App() {
       </header>
 
       {/* ── Main App Layout Grid ── */}
-      <div className="relative z-10 min-h-dvh flex flex-col lg:flex-row">
-        {/* ── Center / Left Column: Interactive Voice Avatar & Inputs ── */}
-        <main className="flex-1 flex flex-col items-center justify-center gap-3 px-6 pt-24 pb-12 lg:py-6 max-w-3xl mx-auto w-full">
+      <div className="relative z-10 h-dvh flex flex-col lg:flex-row overflow-hidden">
+        {/* ── Center / Left Column: Interactive Voice Avatar & Inputs (Static / Centered) ── */}
+        <main className="flex-1 flex flex-col items-center justify-center gap-2 px-6 pt-16 pb-3 max-w-3xl mx-auto w-full h-full overflow-y-auto custom-scrollbar">
           {/* Mobile Persona selector */}
           <div className="sm:hidden w-full flex justify-center mb-1">
             <PersonaSelector persona={persona} onChange={setPersona} disabled={isBusy} />
@@ -293,18 +293,18 @@ function App() {
 
           {/* Header Title */}
           <div className="text-center select-none">
-            <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
               <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
                 Joshna AI
               </span>
             </h1>
-            <p className="text-xs md:text-sm text-[var(--color-text-muted)] mt-0.5 font-medium tracking-wide">
+            <p className="text-[11px] md:text-xs text-[var(--color-text-muted)] mt-0.5 font-medium tracking-wide">
               Voice-Enabled Digital Twin • 2026 B.Tech Computer Science Graduate
             </p>
           </div>
 
           {/* Recruiter Quick Action Toolbar */}
-          <div className="w-full mt-1">
+          <div className="w-full">
             <RecruiterToolbar
               onOpenJDMatcher={() => setIsJDMatcherOpen(true)}
               onOpenArchitecture={() => {
@@ -327,7 +327,7 @@ function App() {
 
           {/* Live Transcript when user speaks */}
           {state === 'listening' && liveTranscript ? (
-            <div className="w-full max-w-md px-4 py-2 rounded-2xl bg-indigo-500/10 border border-indigo-500/25 text-xs text-indigo-300 animate-pulse text-center">
+            <div className="w-full max-w-md px-4 py-1.5 rounded-2xl bg-indigo-500/10 border border-indigo-500/25 text-xs text-indigo-300 animate-pulse text-center">
               <span className="font-bold text-indigo-400">Hearing: </span>
               "{liveTranscript}"
             </div>
@@ -342,7 +342,7 @@ function App() {
           {speechSupported ? (
             <MicButton state={state} onToggle={toggleListening} onCancelSpeaking={cancelSpeaking} />
           ) : (
-            <div className="text-center px-4 py-2.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 max-w-sm">
+            <div className="text-center px-4 py-2 rounded-2xl bg-amber-500/10 border border-amber-500/20 max-w-sm">
               <p className="text-xs text-amber-400">
                 🎤 Voice recognition is not supported in this browser. Please use <strong>Google Chrome</strong> for voice features, or type below.
               </p>
@@ -360,7 +360,7 @@ function App() {
             <button
               type="button"
               onClick={() => setDrawerOpen(true)}
-              className="lg:hidden mt-2 text-xs font-semibold px-4 py-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 transition-all flex items-center gap-2 shadow-lg"
+              className="lg:hidden text-xs font-semibold px-4 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 text-indigo-300 hover:bg-indigo-500/20 transition-all flex items-center gap-2 shadow-lg"
             >
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 8.511c.884.284 1.5 1.128 1.5 2.097v4.286c0 1.136-.847 2.1-1.98 2.193-.34.027-.68.052-1.02.072v3.091l-3-3c-1.354 0-2.694-.055-4.02-.163a2.115 2.115 0 01-.825-.242" />
@@ -370,9 +370,9 @@ function App() {
           )}
         </main>
 
-        {/* ── Desktop Right Column: Full Conversation Panel ── */}
-        <aside className="hidden lg:flex lg:flex-col lg:w-96 xl:w-[430px] border-l border-[var(--color-border)] bg-[var(--color-aside)] backdrop-blur-md overflow-hidden min-w-0 pt-16">
-          <div className="h-full flex flex-col">
+        {/* ── Desktop Right Column: Full Conversation Panel (Independent Scroll) ── */}
+        <aside className="hidden lg:flex lg:flex-col lg:w-96 xl:w-[430px] border-l border-[var(--color-border)] bg-[var(--color-aside)] backdrop-blur-md overflow-hidden min-w-0 pt-16 h-full">
+          <div className="h-full flex flex-col overflow-hidden">
             <ConversationHistory
               history={history}
               state={state}
