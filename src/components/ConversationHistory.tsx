@@ -6,6 +6,7 @@ interface ConversationHistoryProps {
   history: Exchange[];
   state: BotState;
   recruiterFocus?: string;
+  onUpdateRecruiterFocus?: (focus: string) => void;
   onEndSession?: () => void;
   onInspectArchitecture?: (projectId: string) => void;
 }
@@ -86,22 +87,40 @@ export function ConversationHistory({
   history,
   state,
   recruiterFocus,
+  onUpdateRecruiterFocus,
   onEndSession,
   onInspectArchitecture,
 }: ConversationHistoryProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isSwitchingFocus, setIsSwitchingFocus] = useState(false);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   }, [history.length, state]);
 
+  const QUICK_FOCUS_OPTIONS = [
+    { label: 'AI & ML', value: 'AI & Machine Learning (RAG, LLMs, Voice AI)' },
+    { label: 'Full-Stack MERN', value: 'Full-Stack MERN (React, Node, TypeScript, MongoDB)' },
+    { label: 'System Architecture', value: 'System Architecture (Microservices, Docker, CI/CD)' },
+  ];
+
   if (history.length === 0 && state !== 'thinking') {
     return (
       <div className="flex flex-col items-center justify-center h-full px-4 py-8 text-center">
         {recruiterFocus && (
-          <div className="mb-4 text-xs text-indigo-300 bg-indigo-500/10 border border-indigo-500/20 px-3.5 py-1.5 rounded-full flex items-center gap-1.5 animate-fade-in shadow-sm">
+          <div className="mb-4 text-xs text-indigo-300 bg-indigo-500/10 border border-indigo-500/20 px-3.5 py-1.5 rounded-full flex items-center gap-2 animate-fade-in shadow-sm">
             <span>🎯</span>
             <span>Tailored for: <strong className="text-indigo-200">{recruiterFocus}</strong></span>
+            {onUpdateRecruiterFocus && (
+              <button
+                type="button"
+                onClick={() => onUpdateRecruiterFocus('')}
+                className="ml-1 text-[10px] text-indigo-400 hover:text-indigo-200 underline"
+                title="Reset to General"
+              >
+                Reset
+              </button>
+            )}
           </div>
         )}
         <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-3.5">
@@ -153,18 +172,66 @@ export function ConversationHistory({
         </div>
       </div>
 
-      {/* Adaptive Recruiter Focus Indicator Banner */}
+      {/* Adaptive Recruiter Focus Indicator Banner with Live Switcher */}
       {recruiterFocus && (
-        <div className="px-3.5 py-2 border-b border-[var(--color-border)] bg-gradient-to-r from-indigo-500/10 via-purple-500/5 to-transparent flex items-center justify-between gap-2 animate-fade-in">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="text-xs">🎯</span>
-            <span className="text-[11px] font-semibold text-indigo-300 truncate">
-              Tailored for: <strong className="text-indigo-200">{recruiterFocus}</strong>
-            </span>
+        <div className="px-3.5 py-2 border-b border-[var(--color-border)] bg-gradient-to-r from-indigo-500/10 via-purple-500/5 to-transparent flex flex-col gap-1.5 animate-fade-in">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="text-xs">🎯</span>
+              <span className="text-[11px] font-semibold text-indigo-300 truncate">
+                Tailored for: <strong className="text-indigo-200">{recruiterFocus}</strong>
+              </span>
+            </div>
+            <div className="flex items-center gap-1">
+              {onUpdateRecruiterFocus && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setIsSwitchingFocus(!isSwitchingFocus)}
+                    className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 transition-colors flex items-center gap-1"
+                    title="Switch focus area"
+                  >
+                    <span>✏️</span>
+                    <span>{isSwitchingFocus ? 'Close' : 'Switch'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onUpdateRecruiterFocus('');
+                      setIsSwitchingFocus(false);
+                    }}
+                    className="text-[10px] font-bold px-1.5 py-0.5 rounded-md hover:bg-rose-500/20 text-rose-400 transition-colors"
+                    title="Reset focus"
+                  >
+                    ✕
+                  </button>
+                </>
+              )}
+            </div>
           </div>
-          <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 whitespace-nowrap">
-            Adaptive
-          </span>
+
+          {/* Quick Focus Switch Chips */}
+          {isSwitchingFocus && onUpdateRecruiterFocus && (
+            <div className="flex flex-wrap gap-1 pt-1 pb-0.5 animate-slide-up">
+              {QUICK_FOCUS_OPTIONS.map((opt) => (
+                <button
+                  key={opt.label}
+                  type="button"
+                  onClick={() => {
+                    onUpdateRecruiterFocus(opt.value);
+                    setIsSwitchingFocus(false);
+                  }}
+                  className={`text-[9px] font-bold px-2 py-0.5 rounded-full border transition-all ${
+                    recruiterFocus === opt.value
+                      ? 'bg-indigo-600 text-white border-indigo-500 shadow-sm'
+                      : 'bg-white/5 text-[var(--color-text-muted)] hover:text-white border-white/10 hover:border-indigo-500/40'
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
       )}
 

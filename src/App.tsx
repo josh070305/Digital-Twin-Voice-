@@ -380,6 +380,7 @@ function App() {
               history={history}
               state={state}
               recruiterFocus={recruiterFocus}
+              onUpdateRecruiterFocus={updateRecruiterFocus}
               onEndSession={() => setIsSessionSummaryOpen(true)}
               onInspectArchitecture={handleInspectArchitecture}
             />
@@ -419,6 +420,7 @@ function App() {
                 history={history}
                 state={state}
                 recruiterFocus={recruiterFocus}
+                onUpdateRecruiterFocus={updateRecruiterFocus}
                 onEndSession={() => {
                   setDrawerOpen(false);
                   setIsSessionSummaryOpen(true);
