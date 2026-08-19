@@ -170,18 +170,6 @@ function calcConfidence(chunks: Chunk[]): number {
   return Math.min(Math.max(Math.round((top / 8) * 100 + 40), 55), 98);
 }
 
-const TOPIC_SUGGESTIONS: Record<string, { topic: string; query: string }> = {
-  ecommerce: { topic: 'my Exam Update Tracker AI Agent', query: 'Tell me about your Exam Update Tracker project' },
-  'exam-tracker': { topic: 'my Real-Time AI Meeting Assistant', query: 'Tell me about your Real-Time AI Meeting Assistant project' },
-  'realtime-meeting': { topic: 'my technical skills and tools', query: 'What is your complete tech stack?' },
-  skills: { topic: 'my education background', query: 'Tell me about your college and education' },
-  education: { topic: 'how to reach or hire me', query: 'How can I contact or hire you?' },
-  github: { topic: 'my microservices project', query: 'Tell me about your E-Commerce Microservices project' },
-  contact: { topic: 'my core technical skills', query: 'What are your technical skills?' },
-  summary: { topic: 'my featured projects', query: 'What projects have you built?' },
-  location: { topic: 'my availability and work preferences', query: 'Are you open to relocation or remote work?' },
-};
-
 /* ── Main Voice Bot Hook ── */
 export function useVoiceBot() {
   const [state, setState] = useState<BotState>('idle');
@@ -253,19 +241,56 @@ export function useVoiceBot() {
     setRecruiterFocusState(focus);
   }, []);
 
-  const getProactiveFollowUp = useCallback((primaryChunkId?: string): string | null => {
-    const totalExchanges = history.length + 1;
-    if (totalExchanges % 3 !== 0) return null;
+  const getProactiveFollowUp = useCallback((primaryChunkId?: string, query: string = ''): string | null => {
+    const qCount = getQuestionCount();
+    // After every 2nd question, add a natural follow-up
+    if (qCount <= 1 || qCount % 2 !== 0) return null;
 
-    if (primaryChunkId && TOPIC_SUGGESTIONS[primaryChunkId]) {
-      const { topic } = TOPIC_SUGGESTIONS[primaryChunkId];
-      if (langRef.current === 'hi-IN') {
-        return `\n\nक्या आप ${topic} के बारे में और जानना चाहेंगे?`;
-      }
-      return `\n\nWould you like to know more about ${topic}?`;
+    const q = query.toLowerCase();
+    const id = primaryChunkId || '';
+
+    // Projects follow-up
+    if (
+      q.includes('project') ||
+      id.includes('project') ||
+      id.includes('ecommerce') ||
+      id.includes('meeting') ||
+      id.includes('tracker')
+    ) {
+      if (langRef.current === 'hi-IN') return ' क्या आप इनमें से किसी प्रोजेक्ट के बारे में अधिक विवरण जानना चाहेंगे?';
+      if (langRef.current === 'fr-FR') return ' Souhaitez-vous plus de détails sur l\'un de ces projets ?';
+      if (langRef.current === 'es-ES') return ' ¿Desea más detalles sobre alguno de estos proyectos?';
+      return ' Would you like more detail on any of these?';
     }
-    return null;
-  }, [history.length]);
+
+    // Skills follow-up
+    if (q.includes('skill') || q.includes('stack') || q.includes('tech') || id === 'skills') {
+      if (langRef.current === 'hi-IN') return ' क्या कोई विशेष तकनीक है जिसके बारे में आप विस्तार से जानना चाहेंगे?';
+      if (langRef.current === 'fr-FR') return ' Y a-t-il une technologie spécifique sur laquelle vous souhaitez en savoir plus ?';
+      if (langRef.current === 'es-ES') return ' ¿Hay alguna tecnología específica sobre la que le gustaría que profundice?';
+      return " Is there a specific technology you'd like me to elaborate on?";
+    }
+
+    // Education follow-up
+    if (
+      q.includes('education') ||
+      q.includes('college') ||
+      q.includes('degree') ||
+      q.includes('university') ||
+      id === 'education'
+    ) {
+      if (langRef.current === 'hi-IN') return ' डिग्री के साथ-साथ मेरे पास प्रैक्टिकल प्रोजेक्ट अनुभव भी है — क्या आप एक उदाहरण देखना चाहेंगे?';
+      if (langRef.current === 'fr-FR') return ' J\'ai également une expérience pratique sur des projets en plus de mon diplôme — voulez-vous que je vous en présente un ?';
+      if (langRef.current === 'es-ES') return ' También tengo experiencia práctica en proyectos junto con mi carrera, ¿quiere que le explique uno?';
+      return ' I also have hands-on project experience alongside my degree — want me to walk through one?';
+    }
+
+    // General / Experience follow-up
+    if (langRef.current === 'hi-IN') return ' यदि आपकी टीम के लिए उपयोगी हो तो मुझे किसी भी क्षेत्र में विस्तार से बताने में खुशी होगी।';
+    if (langRef.current === 'fr-FR') return ' Ravi d\'approfondir tout domaine spécifique s\'il est pertinent pour votre équipe.';
+    if (langRef.current === 'es-ES') return ' Con gusto profundizaré en cualquier área específica si es relevante para su equipo.';
+    return " Happy to go deeper on any specific area if it's relevant to your team.";
+  }, []);
 
   const processQuery = useCallback(
     async (transcript: string) => {
@@ -336,7 +361,7 @@ export function useVoiceBot() {
           return;
         }
 
-        const followUp = getProactiveFollowUp(chunks[0]?.id);
+        const followUp = getProactiveFollowUp(chunks[0]?.id, transcript);
         const finalAnswer = followUp ? answer + followUp : answer;
 
         setState('speaking');
