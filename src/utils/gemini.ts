@@ -17,6 +17,30 @@ const MODELS = [
 
 const MAX_RETRIES_PER_MODEL = 2;
 
+let recruiterFocus = '';
+let questionCount = 0;
+
+export function setRecruiterFocus(focus: string) {
+  recruiterFocus = focus;
+}
+
+export function getRecruiterFocus(): string {
+  return recruiterFocus;
+}
+
+export function getQuestionCount(): number {
+  return questionCount;
+}
+
+export function incrementQuestionCount() {
+  questionCount++;
+}
+
+export function resetRecruiterState() {
+  recruiterFocus = '';
+  questionCount = 0;
+}
+
 export interface GeminiResponse {
   answer: string;
   citation: string;
@@ -255,8 +279,13 @@ export async function askGemini(
   const langRule = LANGUAGE_INSTRUCTIONS[langCode] || LANGUAGE_INSTRUCTIONS['en-US'];
   const personaRule = PERSONA_INSTRUCTIONS[persona] || PERSONA_INSTRUCTIONS.professional;
 
+  const focusInstruction = recruiterFocus
+    ? `\n\nIMPORTANT: The recruiter cares most about: "${recruiterFocus}". Emphasize aspects of your experience that relate to this. Lead with the most relevant information first in every answer.`
+    : '';
+
   const prompt = `${langRule}
 ${personaRule}
+${focusInstruction}
 
 You are Joshna speaking in the first person ("I", "my").
 Answer ONLY the specific question asked in 2-3 complete, well-formed, natural sentences using the verified facts below.

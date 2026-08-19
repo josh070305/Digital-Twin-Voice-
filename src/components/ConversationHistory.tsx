@@ -5,6 +5,7 @@ import { CitationCard } from './CitationCard';
 interface ConversationHistoryProps {
   history: Exchange[];
   state: BotState;
+  recruiterFocus?: string;
   onEndSession?: () => void;
   onInspectArchitecture?: (projectId: string) => void;
 }
@@ -84,6 +85,7 @@ function TypingIndicator() {
 export function ConversationHistory({
   history,
   state,
+  recruiterFocus,
   onEndSession,
   onInspectArchitecture,
 }: ConversationHistoryProps) {
@@ -96,6 +98,12 @@ export function ConversationHistory({
   if (history.length === 0 && state !== 'thinking') {
     return (
       <div className="flex flex-col items-center justify-center h-full px-4 py-8 text-center">
+        {recruiterFocus && (
+          <div className="mb-4 text-xs text-indigo-300 bg-indigo-500/10 border border-indigo-500/20 px-3.5 py-1.5 rounded-full flex items-center gap-1.5 animate-fade-in shadow-sm">
+            <span>🎯</span>
+            <span>Tailored for: <strong className="text-indigo-200">{recruiterFocus}</strong></span>
+          </div>
+        )}
         <div className="w-14 h-14 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center mb-3.5">
           <svg className="w-7 h-7 text-indigo-400" fill="none" stroke="currentColor" strokeWidth="1.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -144,6 +152,21 @@ export function ConversationHistory({
           )}
         </div>
       </div>
+
+      {/* Adaptive Recruiter Focus Indicator Banner */}
+      {recruiterFocus && (
+        <div className="px-3.5 py-2 border-b border-[var(--color-border)] bg-gradient-to-r from-indigo-500/10 via-purple-500/5 to-transparent flex items-center justify-between gap-2 animate-fade-in">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <span className="text-xs">🎯</span>
+            <span className="text-[11px] font-semibold text-indigo-300 truncate">
+              Tailored for: <strong className="text-indigo-200">{recruiterFocus}</strong>
+            </span>
+          </div>
+          <span className="text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 whitespace-nowrap">
+            Adaptive
+          </span>
+        </div>
+      )}
 
       {/* Messages Feed — 100% full text, no max-height or line-clamp */}
       <div

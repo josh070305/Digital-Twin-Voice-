@@ -4,6 +4,7 @@ import knowledge from '../data/knowledge.json';
 interface JobMatcherModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSetRecruiterFocus?: (focus: string) => void;
 }
 
 interface MatchAnalysis {
@@ -15,7 +16,7 @@ interface MatchAnalysis {
 
 const GEMINI_KEY = import.meta.env.VITE_GEMINI_KEY as string;
 
-export function JobMatcherModal({ isOpen, onClose }: JobMatcherModalProps) {
+export function JobMatcherModal({ isOpen, onClose, onSetRecruiterFocus }: JobMatcherModalProps) {
   const [jdText, setJdText] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [analysis, setAnalysis] = useState<MatchAnalysis | null>(null);
@@ -90,14 +91,20 @@ Analyze the candidate fit and respond with a strict JSON object with this exact 
       }
 
       setAnalysis(parsed);
+      if (parsed?.matchingSkills?.length) {
+        const focusSummary = parsed.matchingSkills.slice(0, 3).join(', ') + ' & JD requirements';
+        onSetRecruiterFocus?.(focusSummary);
+      }
     } catch {
       // Deterministic fallback
-      setAnalysis({
+      const fallbackAnalysis = {
         score: 88,
         matchingSkills: ['React.js', 'Node.js', 'TypeScript', 'MongoDB', 'Docker', 'REST APIs'],
         missingSkills: ['Kubernetes', 'Cloud-specific deployment'],
         whyHire: 'Joshna has hands-on full-stack microservices expertise and low-latency AI integrations with sub-200ms benchmarks. As a 2026 CS graduate with an 8.2 CGPA, I adapt rapidly to technical teams.',
-      });
+      };
+      setAnalysis(fallbackAnalysis);
+      onSetRecruiterFocus?.('React, Node.js, TypeScript & Microservices');
     } finally {
       setIsLoading(false);
     }

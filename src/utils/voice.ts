@@ -1,6 +1,13 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { searchKnowledge, type Chunk } from './search';
-import { askGemini, type Persona } from './gemini';
+import {
+  askGemini,
+  type Persona,
+  getRecruiterFocus,
+  setRecruiterFocus,
+  getQuestionCount,
+  incrementQuestionCount,
+} from './gemini';
 
 export type BotState = 'idle' | 'listening' | 'thinking' | 'speaking' | 'error';
 export type Language = 'en-US' | 'hi-IN' | 'fr-FR' | 'es-ES';
@@ -239,6 +246,13 @@ export function useVoiceBot() {
     ]);
   };
 
+  const [recruiterFocus, setRecruiterFocusState] = useState<string>(() => getRecruiterFocus());
+
+  const updateRecruiterFocus = useCallback((focus: string) => {
+    setRecruiterFocus(focus);
+    setRecruiterFocusState(focus);
+  }, []);
+
   const getProactiveFollowUp = useCallback((primaryChunkId?: string): string | null => {
     const totalExchanges = history.length + 1;
     if (totalExchanges % 3 !== 0) return null;
@@ -263,6 +277,23 @@ export function useVoiceBot() {
       setLiveTranscript('');
 
       try {
+        // ── ADAPTIVE RECRUITER MODE: Capture answer to recruiter focus follow-up ──
+        if (getQuestionCount() === 1 && !getRecruiterFocus()) {
+          const cleanFocus = transcript.trim();
+          setRecruiterFocus(cleanFocus);
+          setRecruiterFocusState(cleanFocus);
+          incrementQuestionCount();
+
+          const ack = "Perfect — I'll make sure to highlight that in everything I share with you.";
+          setState('speaking');
+          await speakAnswer(ack, langRef.current);
+          addToHistory(transcript, ack, 'Adaptive Recruiter Profile', [], 100);
+          setState('idle');
+          return;
+        }
+
+        incrementQuestionCount();
+
         const chunks = searchKnowledge(transcript);
         const confidence = calcConfidence(chunks);
 
@@ -312,6 +343,18 @@ export function useVoiceBot() {
         await speakAnswer(finalAnswer, langRef.current);
         addToHistory(transcript, finalAnswer, citation, chunks, confidence);
         setState('idle');
+
+        // ── ADAPTIVE RECRUITER MODE: Automatic follow-up after the 1st answer ──
+        if (getQuestionCount() === 1 && !getRecruiterFocus()) {
+          setTimeout(async () => {
+            const recruiterFollowUp =
+              "Thanks for asking! To help me give you the most relevant answers — what matters most to your team right now? AI and ML work, full-stack development, or system architecture?";
+            setState('speaking');
+            await speakAnswer(recruiterFollowUp, langRef.current);
+            addToHistory('', recruiterFollowUp, 'Adaptive Recruiter Mode', [], 100);
+            setState('idle');
+          }, 1500);
+        }
       } catch (err) {
         console.error('Voice bot processing error:', err);
         setIsRetrying(false);
@@ -477,6 +520,8 @@ export function useVoiceBot() {
     isRetrying,
     liveTranscript,
     lastErrorType,
+    recruiterFocus,
+    updateRecruiterFocus,
     setLanguage,
     setPersona,
     toggleListening,

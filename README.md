@@ -5,6 +5,7 @@ A voice-enabled AI that answers questions about Joshna in real time with cited s
 ## What Makes This Different
 
 ### Features No Other Candidate Built:
+- **Adaptive Recruiter Mode** — Detects recruiter focus (AI/ML, Full-Stack, System Architecture or JD) and dynamically steers all subsequent Gemini answers
 - Recruiter Tools Panel — Match My JD, Architecture viewer, Interview booking, Docs
 - Multilingual voice in 4 languages (English, Hindi, French, Spanish)
 - Three response personas (Professional/Casual/Technical)

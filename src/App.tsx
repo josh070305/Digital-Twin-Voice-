@@ -35,6 +35,8 @@ function App() {
     isRetrying,
     liveTranscript,
     lastErrorType,
+    recruiterFocus,
+    updateRecruiterFocus,
     setLanguage,
     setPersona,
     toggleListening,
@@ -215,6 +217,7 @@ function App() {
       <JobMatcherModal
         isOpen={isJDMatcherOpen}
         onClose={() => setIsJDMatcherOpen(false)}
+        onSetRecruiterFocus={updateRecruiterFocus}
       />
 
       <InterviewSchedulerModal
@@ -376,6 +379,7 @@ function App() {
             <ConversationHistory
               history={history}
               state={state}
+              recruiterFocus={recruiterFocus}
               onEndSession={() => setIsSessionSummaryOpen(true)}
               onInspectArchitecture={handleInspectArchitecture}
             />
@@ -414,6 +418,7 @@ function App() {
               <ConversationHistory
                 history={history}
                 state={state}
+                recruiterFocus={recruiterFocus}
                 onEndSession={() => {
                   setDrawerOpen(false);
                   setIsSessionSummaryOpen(true);
